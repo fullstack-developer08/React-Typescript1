@@ -69,5 +69,5 @@ const navbarClass = classNames({
       'is-success': this.state.navIsLink,
 });
 
-&lt;nav className={navbarClass}>
+<nav className={navbarClass}>
 ```
