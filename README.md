@@ -1,4 +1,4 @@
-# React with Typescript
+# React with Typescript Part 1 with classnames
 
 ## Prerequisite:
 
