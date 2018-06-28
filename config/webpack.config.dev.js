@@ -176,7 +176,7 @@ module.exports = {
               {
                 loader: require.resolve('css-loader'),
                 options: {
-                  importLoaders: 1,
+                  importLoaders: 1, modules: true, localIdentName: '[name]__[local]__[hash:base64:5]'
                 },
               },
               {
@@ -201,6 +201,41 @@ module.exports = {
               },
             ],
           },
+
+          // SCSS loader
+          {
+            test: /\.scss$/,
+            use: [
+              require.resolve('style-loader'),
+              {
+                loader: require.resolve('css-loader'),
+                options: {
+                  importLoaders: 1, modules: true, localIdentName: '[name]__[local]__[hash:base64:5]'
+                },
+              },
+              {
+                loader: require.resolve('postcss-loader'),
+                options: {
+                  ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
+                  plugins: () => [
+                    require('postcss-flexbugs-fixes'),
+                    autoprefixer({
+                      browsers: [
+                        '>1%',
+                        'last 4 versions',
+                        'Firefox ESR',
+                        'not ie < 9', // React doesn't support IE8 anyway
+                      ],
+                      flexbox: 'no-2009',
+                    }),
+                  ],
+                },
+              },
+              {
+                loader: require.resolve('sass-loader'),
+              },
+            ],
+          },
           // "file" loader makes sure those assets get served by WebpackDevServer.
           // When you `import` an asset, you get its (virtual) filename.
           // In production, they would get copied to the `build` folder.
@@ -211,7 +246,24 @@ module.exports = {
             // its runtime that would otherwise processed through "file" loader.
             // Also exclude `html` and `json` extensions so they get processed
             // by webpacks internal loaders.
-            exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
+            exclude: [
+              /\.html$/,
+              // We have to write /\.(js|jsx)(\?.*)?$/ rather than just /\.(js|jsx)$/
+              // because you might change the hot reloading server from the custom one
+              // to Webpack's built-in webpack-dev-server/client?/, which would not
+              // get properly excluded by /\.(js|jsx)$/ because of the query string.
+              // Webpack 2 fixes this, but for now we include this hack.
+              // https://github.com/facebookincubator/create-react-app/issues/1713
+              /\.(js|jsx)(\?.*)?$/,
+              /\.(ts|tsx)(\?.*)?$/,
+              /\.css$/,
+              /\.scss$/,
+              /\.json$/,
+              /\.bmp$/,
+              /\.gif$/,
+              /\.jpe?g$/,
+              /\.png$/,
+            ],
             loader: require.resolve('file-loader'),
             options: {
               name: 'static/media/[name].[hash:8].[ext]',

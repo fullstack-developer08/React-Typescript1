@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './App.css';
+import * as styles from './App.scss';
 import 'bulma/css/bulma.min.css';
 import * as classNames from 'classnames';
 
@@ -36,6 +36,9 @@ class App extends React.Component<any, any> {
     });
     return (
           <div>
+            <div className={styles.textCenter}>
+                Center
+            </div>
             <nav className={navbarClass}>
               <div className="navbar-brand">
                 <a className="navbar-item" href="https://bulma.io">
